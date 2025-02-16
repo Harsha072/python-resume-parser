@@ -1,8 +1,11 @@
 
 
+import json
 import pika
 import os
 import tempfile
+
+from spellchecker import SpellChecker
 from parser.textextract import extract_text_from_pdf
 from config.settings import settings
 
@@ -17,6 +20,21 @@ def start_consumer():
 
     # Declare the queue
     channel.queue_declare(queue=settings.rabbitmq_queue, durable=True)
+
+
+    def detect_typos(text):
+        spell = SpellChecker()
+        # Split the text into words and check for misspellings
+        misspelled = spell.unknown(text.split())
+        return list(misspelled)  # Return a list of misspelled words
+
+    def send_feedback(ch, feedback):
+            # Send feedback to the feedback queue
+         ch.basic_publish(
+                    exchange="",
+                    routing_key=settings.feedback_queue,
+                    body=json.dumps(feedback).encode("utf-8")
+        )
 
     # Define the callback function
     def callback(ch, method, properties, body):
@@ -34,9 +52,24 @@ def start_consumer():
             with open(temp_file_path, "rb") as file:
                 text = extract_text_from_pdf(file)
                 print("Parsed Data:", text)
+                typos = detect_typos(text)
+            feedback = {
+                "parsed_text": text,
+                "typos": typos,
+                "status": "success" if not typos else "typos_found"
+            }
+
+            # Send feedback to Spring Boot via RabbitMQ
+            send_feedback(ch, feedback)
 
         except Exception as e:
             print(f"Error processing resume: {e}")
+             
+            feedback = {
+                "error": str(e),
+                "status": "error"
+            }
+            send_feedback(ch, feedback)
         finally:
             # Clean up: Delete the temporary file
             if os.path.exists(temp_file_path):

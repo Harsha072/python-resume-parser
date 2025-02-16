@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     rabbitmq_username: str
     rabbitmq_password: str
     rabbitmq_queue: str
+    feedback_queue: str
 
     class Config:
         env_file = env_path  # Optional, since we're using load_dotenv
