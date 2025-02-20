@@ -1421,6 +1421,18 @@ files = [
 ]
 
 [[package]]
+name = "pyspellchecker"
+version = "0.8.2"
+description = "Pure python spell checker based on work by Peter Norvig"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "pyspellchecker-0.8.2-py3-none-any.whl", hash = "sha256:4fee22e1859c5153c3bc3953ac3041bf07d4541520b7e01901e955062022290a"},
+    {file = "pyspellchecker-0.8.2.tar.gz", hash = "sha256:2b026be14a162ba810bdda8e5454c56e364f42d3b9e14aeff31706e5ebcdc78f"},
+]
+
+[[package]]
 name = "python-docx"
 version = "1.1.2"
 description = "Create, read, and update Microsoft Word .docx files."
@@ -2017,4 +2029,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "3.11"
-content-hash = "bf71341cf46dad4590554dbb05bee90495189d7c25728689feff06bebb6f037c"
+content-hash = "577b5a2f4912ac0a67bbd70b72bf0e048ccd63f406c215837c5c7dd20f968547"
